@@ -6,7 +6,7 @@ describe('register', () => {
         // Diferencial 2 - Criar uma conta na tela de Login/Cadastro.
         
         // GET in ramdomuser api for account creation
-        cy.request('GET', 'https://randomuser.me/api/?password=special,upper,lower,8-12').as('createUser').then((response) => {
+        cy.request('GET', 'https://randomuser.me/api/?password=special,upper,lower,number,10-12').as('createUser').then((response) => {
             const data = response.body.results[0]
 
             // fill and submit form
