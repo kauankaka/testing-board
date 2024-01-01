@@ -23,3 +23,42 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
+
+Cypress.Commands.add(
+    'login',
+    (
+        user = {
+            email: null,
+            password: null,
+            name: null,
+        },
+
+        { cacheSession = true } = {}
+    ) => {
+        const login = () => {
+            cy.visit('https://magento.softwaretestingboard.com/customer/account/login');
+            cy.get('[data-ui-id="page-title-wrapper"]').should('be.visible')
+            cy.get('#email').type(user.email)
+            cy.get('#pass').type(user.password)
+            cy.get('#send2').click()
+            cy.get('.logged-in').should('contain.text', user.name)
+        };
+
+        const validate = () => {
+            cy.visit('https://magento.softwaretestingboard.com/customer/account/');
+            cy.location('pathname', { timeout: 2000 }).should('not.contain', '/customer/account/login');
+        }
+
+        const options = {
+            cacheAcrossSpecs: true,
+            validate
+        };
+
+        if (cacheSession) {
+            cy.session(user, login, options);
+        } else {
+            login();
+        }
+
+    },
+);
